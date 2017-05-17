@@ -11,7 +11,7 @@ module.exports = function(grunt)
                             expand: true,
                             cwd: 'node_modules/systemjs/dist/',
                             src: 'system.js',
-                            dest: 'build/'
+                            dest: 'libs/'
                         }
                     ]
             },
@@ -22,13 +22,13 @@ module.exports = function(grunt)
                             expand: true,
                             cwd: 'node_modules/react/dist/',
                             src: 'react.js',
-                            dest: 'build/'
+                            dest: 'libs/'
                         },
                         {
                             expand: true,
                             cwd: 'node_modules/react-dom/dist/',
                             src: 'react-dom.js',
-                            dest: 'build/'
+                            dest: 'libs/'
                         }
                     ],
             }
@@ -128,7 +128,8 @@ module.exports = function(grunt)
 
             prod: {
                 src: [
-                    'build/styles.css'
+                    'build/styles.css',
+					'build/scripts.min.js'
                 ],
 
                 dest: ['index.html']
@@ -147,6 +148,7 @@ module.exports = function(grunt)
                 options: {livereload: true},
                 files: ['ts/**/*.*', 'jsx/**/*.*'],
                 tasks: ['clean:js_min',
+                        'shell',
                         'ts',
                         'tslint',
                         'react',

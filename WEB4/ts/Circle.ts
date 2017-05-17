@@ -7,8 +7,8 @@ export class Circle extends Shape {
 
     constructor() {
         super();
-        this.fillColor = "#fff";
-        this.borderColor = "#fff";
+        this.fillColor = "#eceece";
+        this.borderColor = "#000";
         this.radius = 20;
         this.posX = 100;
         this.posY = 100;

@@ -94,7 +94,7 @@ window.onload = (): void => {
         if (borderColor.value) { shape.borderColor = borderColor.value; }
         shape.Draw(ctx);
 
-        info.innerHTML = "Area: " + shape.CalculateArea() + "<br />Perimeter: " + shape.CalculatePerimeter();
+        info.innerHTML = "Area size: " + shape.CalculateArea() + "<br />Perimeter size: " + shape.CalculatePerimeter();
     }
 
     let form = document.getElementById("settings-form") as HTMLInputElement;

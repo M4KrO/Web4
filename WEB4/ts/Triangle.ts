@@ -13,8 +13,8 @@ export class Triangle extends Shape {
 
     constructor() {
         super();
-        this.fillColor = "#fff";
-        this.borderColor = "#fff";
+        this.fillColor = "#cecece";
+        this.borderColor = "#ededed";
         this.posX1 = 20;
         this.posY1 = 20;
         this.posX2 = 150;

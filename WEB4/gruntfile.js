@@ -47,22 +47,60 @@ module.exports = function(grunt)
         connect: {
             server: {
                 options: {
-                    open: true
+                    port: 8080,
+                    base: '',
+                    open: {
+                        appName: 'Chrome'
+                    }
                 }
             }
+        },
+
+        clean: {
+            tsScripts: ['js/tsScripts.js'],
+            scripts: ['build/scripts.js'],
+            jsFolder: ['js'],
+            js_min: ['build/*.js'],
+            css_min: ['build/*.css']
+        },
+
+        ts: {
+            default: {
+                src: ['ts/*.ts'],
+                out: 'js/tsScripts.js',
+                options: {
+                    noImplicitAny: true,
+                    removeComments: true,
+                    preserveConstEnums: true,
+                    sourceMap: false,
+                    module: 'system',
+                    target: 'es5'
+                },
+                configFile: 'tsconfig.json',
+                src: 'ts/*.ts'
+            }
+        },
+
+        tslint: {
+            options:
+                {
+                    configuration: "tslint.json",
+                    quiet: false
+                },
+            target: 'ts/*.ts'
         },
 
         concat: {
             dist: {
                 src: ['js/**/*.js'],
-                dest: 'build/script.js'
+                dest: 'build/scripts.js'
             }
         },
 
         uglify: {
             build: {
-                src: 'build/script.js',
-                dest: 'build/scripts.js'
+                src: 'build/scripts.js',
+                dest: 'build/scripts.min.js'
             }
         },
 
@@ -82,18 +120,14 @@ module.exports = function(grunt)
             }
         },
 
-        eslint: {
-            target: ['js/**/*.*']
-        },
-
         hashres: {
             options: {
-                fileNameFormat: '${name}.[${hash}].${ext}'
+                fileNameFormat: '${name}.[${hash}].${ext}',
+                renameFiles: true
             },
 
             prod: {
                 src: [
-                    'build/scripts.js',
                     'build/styles.css'
                 ],
 
@@ -111,27 +145,66 @@ module.exports = function(grunt)
 
             scripts: {
                 options: {livereload: true},
-                files: ['js/**/*.*'],
-                tasks: ['concat', 'uglify', 'eslint', 'hashres:prod'],
+                files: ['ts/**/*.*', 'jsx/**/*.*'],
+                tasks: ['clean:js_min',
+                        'ts',
+                        'tslint',
+                        'react',
+                        'copy:react',
+                        'concat',
+                        'uglify',
+                        'clean:scripts',
+                        'hashres:prod',
+                        'copy:systemjs',
+                        'clean:jsFolder'
+                ],
             },
 
             html: {
                 options: {livereload: true},
                 files: ['*.html'],
+            }
+        },
+
+        shell: {
+            options: {
+                stderr: true
             },
+            target: {
+                command: 'cspell ts/*.ts'
+            }
         },
 	});
 
+    grunt.loadNpmTasks('grunt-ts'),
+    grunt.loadNpmTasks('grunt-tslint');
     grunt.loadNpmTasks('grunt-react');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-contrib-watch');  
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-hashres');
-    grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-open');
+    grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'cssmin', 'eslint', 'copy:react', 'hashres:prod', 'connect:server', 'watch']);
+    grunt.registerTask('default', [
+            'clean',
+            'shell',
+            'ts',
+            'tslint',
+            'react',
+            'copy:react',
+            'concat',
+            'uglify',
+            'cssmin',
+            'clean:scripts',
+            'hashres:prod',
+            'copy:systemjs',
+            'clean:jsFolder',
+            'connect:server',
+            'watch'
+    ]);
 };
